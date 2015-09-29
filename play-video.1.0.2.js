@@ -1,3 +1,8 @@
+/**
+ * playVideo 1.0.1
+ * https://github.com/zhouxitian/playVideo
+ * author:zhouxitian@163.com
+ */
 ;(function(window){
 	var rquickExpr = /^#([\w-]+|\w+)$/;//匹配#id
 	var jQuery=function(selector){
