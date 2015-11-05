@@ -1,8 +1,12 @@
 /**
- * playVideo 1.0.1
+ * playVideo 1.0.3
  * https://github.com/zhouxitian/playVideo
  * author:zhouxitian@163.com
  */
+/*
+2015.10.19 修复jQuery.width()/jQuery.height()使用style.width的Bug
+2015.11.02 修改腾讯视频支持直播
+*/
 ;(function(window){
 	var rquickExpr = /^#([\w-]+|\w+)$/;//匹配#id
 	var jQuery=function(selector){
@@ -44,10 +48,10 @@
 			return this[0].getAttribute(name);
 		},
 		width:function(){
-			return this[0].style.width;
+			return this[0].offsetWidth;
 		},
 		height:function(){
-			return this[0].style.height;
+			return this[0].offsetHeight;
 		},
 		getScript:function(url, callback){
 			var script = document.createElement('script');
@@ -103,8 +107,10 @@
 		var options={
 			id:"playvideo",//容器id
 			autoplay:false,
+			qqchannel:false,
 			multiple:""
 		}
+		
 		jQuery.extend(options,opt);
 		if(typeof options.multiple=="object"){
 			var typeid=options.multiple.typeid;
@@ -116,7 +122,7 @@
 			var sid=obj.attr("sid");
 			var pic=obj.attr("pic");
 		}
-		var opts={id:options.id,type:typeid,sid:sid,pic:pic,autoplay:options.autoplay==false?false:true}
+		var opts={id:options.id,type:typeid,qqchannel:options.qqchannel,sid:sid,pic:pic,autoplay:options.autoplay==false?false:true}
 		new playVideo(opts);
 	};
 	playVideo.prototype={
@@ -126,6 +132,7 @@
 				t.options={
 					id:"playvideo",//容器id
 					type:"qq",//视频类型(qq/youku)
+					qqchannel:false,
 					sid:"",//视频id
 					pic:"",//默认图片(只对腾讯视频有效)
 					autoplay:false//是否自动播放
@@ -183,10 +190,18 @@
 			var width=jQuery("#"+t.options.id).width();
 			var height=jQuery("#"+t.options.id).height();
 			//向视频对象传入视频vid
-			video.setVid(t.options.sid);
+			console.log("sd")
 			var player = new tvp.Player(width, height);
+			if(!t.options.qqchannel){
+				video.setVid(t.options.sid);
+			}else{
+				video.setChannelId(t.options.sid);
+				player.addParam('type','1');
+			}
+			
 			//设置播放器初始化时加载的视频
 			player.setCurVideo(video);
+			
 			player.addParam("wmode","transparent");//设置透明化，不设置时，视频为最高级，总是处于页面的最上面，此时设置z-index无效
 			player.addParam('autoplay',t.options.autoplay?1:0);
 			if(t.options.pic&&t.options.pic!="undefined"){
