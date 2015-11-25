@@ -1,6 +1,6 @@
 # playVideo
 优酷、腾讯视频统一播放器插件
-
+```javascript
 createVideo({id:"playvideo",autoplay:false,qqchannel:true});//单个直接调用。qqchannel调用qq直播时使用
 createVideo({//多个直接调用。
 	id:"playvideo",//容器id
@@ -12,3 +12,4 @@ createVideo({//多个直接调用。
 		pic:this.getAttribute("pic")//不自动播放时显示的默认图片。腾讯视频点播时有效
 	}
 });
+```
