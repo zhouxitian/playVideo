@@ -1,11 +1,12 @@
 /**
- * playVideo 1.0.3
+ * playVideo 1.0.4
  * https://github.com/zhouxitian/playVideo
  * author:zhouxitian@163.com
  */
 /*
 2015.10.19 修复jQuery.width()/jQuery.height()使用style.width的Bug
 2015.11.02 修改腾讯视频支持直播
+2015.11.25 增加搜狐视频播放器
 */
 ;(function(window){
 	var rquickExpr = /^#([\w-]+|\w+)$/;//匹配#id
@@ -152,7 +153,7 @@
 								t.playYouku();
 							});
 						}else{
-							console.log("接口文件未加载");
+							console.log("优酷接口文件未加载");
 						}
 					}else{
 						t.playYouku();
@@ -164,10 +165,23 @@
 								t.playQQ();
 							});
 						}else{
-							console.log("接口文件未加载");
+							console.log("腾讯接口文件未加载");
 						}
 					}else{
 						t.playQQ();
+					}
+				}else if(t.options.type=="sohu"){
+					if(!window.SohuMobilePlayer){
+						if(jQuery.getScript){
+							jQuery.getScript("http://img01.static.appgame.com/libs/jsCommon/player/sohu_player.min.js",function(){
+							//jQuery.getScript("http://tv.sohu.com/upload/touch/static/scripts/tv/min.sohu_player.js",function(){
+								t.playSohu();
+							});
+						}else{
+							console.log("搜狐接口文件未加载");
+						}
+					}else{
+						t.playSohu();
 					}
 				}
 			}
@@ -190,7 +204,6 @@
 			var width=jQuery("#"+t.options.id).width();
 			var height=jQuery("#"+t.options.id).height();
 			//向视频对象传入视频vid
-			console.log("sd")
 			var player = new tvp.Player(width, height);
 			if(!t.options.qqchannel){
 				video.setVid(t.options.sid);
@@ -208,10 +221,31 @@
 				player.addParam('pic',t.options.pic);
 			}
 			player.addParam('showend',0)//结束时是否有广告
-			player.addParam("flashskin", "http://imgcache.qq.com/minivideo_v1/vd/res/skins/TencentPlayerMiniSkin.swf");//使视频窗口为小窗口
-			player.addParam("loadingswf", "http://imgcache.qq.com/minivideo_v1/vd/res/skins/web_small_loading.swf");
+			player.addParam('showcfg',0)//是否显示控制列表；1显示，0不显示，默认为1
+		//	player.addParam('controls',1)//html5播放器是否显示控制栏，仅对html5播放器有效；设置为controls显示，disabled不显示，默认显示。
+			player.addParam('adplay',0)//是否播放广告；1播放，0不播放，默认为1
+		//	player.addParam("flashskin", "http://imgcache.qq.com/minivideo_v1/vd/res/skins/TencentPlayerMiniSkin.swf");//使视频窗口为小窗口
+			player.addParam("swfurl", "http://imgcache.qq.com/tencentvideo_v1/player/TencentPlayer.swf");//点播状态flash播放器的swf文件路径，仅对flash播放器有效
+			player.addParam("loadingswf", "http://imgcache.qq.com/minivideo_v1/vd/res/skins/web_small_loading.swf");//加载视频时的swf动画; 不传入则使用默认样式
 			//输出播放器
 			player.write(t.options.id);
+		},
+		playSohu:function(){
+			var t=this;
+			var width=jQuery("#"+t.options.id).width();
+			var height=jQuery("#"+t.options.id).height();
+			var player = new SohuMobilePlayer(t.options.id, {
+			  vid: t.options.sid,
+			  isAutoPlay:t.options.autoplay,
+			  poster:t.options.pic||"",//播放器封面图 (String, 可选)
+			  width:width,//播放器宽度 （Number，可选）
+			  height:height,//播放器高度 （Number，可选）
+			  //adClose:1,//是否禁播广告，默认为0不禁止（Number，可选）。
+			  topBarNor:0,//是否显示顶部标题,0不显示
+			  shareBtn:0,//是否显示分享按钮,0不显示
+			  downloadBtn:0,//是否显示下载按钮,0不显示
+			  miniWinBtn:0,//是否显示新窗口按钮,0不显示
+			},"");
 		}
 	}
 	
