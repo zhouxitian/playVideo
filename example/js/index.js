@@ -10,11 +10,13 @@ window.onload=function(){
 			playlist[i].onclick=function(){ 
 				createVideo({
 					id:"playvideo",
-					autoplay:false,
-					qqchannel:this.getAttribute("channel")||false,
+					autoplay:true,
+					minWin:false,
+					qqchannel:this.getAttribute("channel")=="true"?true:false,
 					multiple:{
 						typeid:this.getAttribute("typeid"),
 						sid:this.getAttribute("sid"),
+						vid:this.getAttribute("vid"),
 						pic:this.getAttribute("pic")
 					}
 				});
